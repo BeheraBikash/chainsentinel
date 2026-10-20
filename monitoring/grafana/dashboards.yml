@@ -1,0 +1,9 @@
+apiVersion: 1
+providers:
+  - name: ChainSentinel
+    orgId: 1
+    folder: ChainSentinel
+    type: file
+    disableDeletion: true
+    options:
+      path: /var/lib/grafana/dashboards

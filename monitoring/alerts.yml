@@ -1,0 +1,25 @@
+groups:
+  - name: chainsentinel-reliability
+    rules:
+      - alert: ChainSentinelNoEligibleRPC
+        expr: sum(chainsentinel_provider_up) == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No usable Ethereum RPC providers"
+          description: "All configured RPC backends are unhealthy, on the wrong chain, or too far behind."
+      - alert: ChainSentinelHighProbeLatency
+        expr: histogram_quantile(0.95, sum by (le, provider) (rate(chainsentinel_probe_duration_seconds_bucket[5m]))) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "RPC provider probe p95 latency exceeds 2 seconds"
+      - alert: ChainSentinelRPCRequestErrors
+        expr: (sum(rate(chainsentinel_rpc_requests_total{outcome="unavailable"}[5m])) / clamp_min(sum(rate(chainsentinel_rpc_requests_total[5m])), 0.001)) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Read-only RPC requests failing above 5%"

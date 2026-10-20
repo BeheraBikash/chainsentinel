@@ -1,0 +1,42 @@
+{
+  "id": null,
+  "uid": "chainsentinel-observability",
+  "title": "ChainSentinel — Ethereum RPC Reliability",
+  "tags": ["web3", "ethereum", "sre", "rpc"],
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "time": {"from": "now-15m", "to": "now"},
+  "timezone": "browser",
+  "annotations": {"list": []},
+  "panels": [
+    {
+      "id": 1, "type": "timeseries", "title": "Provider health (1 = eligible)",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"refId": "A", "expr": "chainsentinel_provider_up", "legendFormat": "{{provider}}"}],
+      "fieldConfig": {"defaults": {"min": 0, "max": 1}, "overrides": []}, "options": {}
+    },
+    {
+      "id": 2, "type": "timeseries", "title": "Provider block lag",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"refId": "A", "expr": "chainsentinel_provider_block_lag", "legendFormat": "{{provider}}"}],
+      "fieldConfig": {"defaults": {"min": 0}, "overrides": []}, "options": {}
+    },
+    {
+      "id": 3, "type": "timeseries", "title": "RPC requests / second by outcome",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"refId": "A", "expr": "sum by (outcome) (rate(chainsentinel_rpc_requests_total[5m]))", "legendFormat": "{{outcome}}"}],
+      "fieldConfig": {"defaults": {"min": 0}, "overrides": []}, "options": {}
+    },
+    {
+      "id": 4, "type": "timeseries", "title": "Provider probe p95 latency (seconds)",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"refId": "A", "expr": "histogram_quantile(0.95, sum by (le, provider) (rate(chainsentinel_probe_duration_seconds_bucket[5m])))", "legendFormat": "{{provider}}"}],
+      "fieldConfig": {"defaults": {"min": 0}, "overrides": []}, "options": {}
+    }
+  ]
+}

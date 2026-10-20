@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chainsentinel-config
+data:
+  EXPECTED_CHAIN_ID: "11155111"
+  MAX_BLOCK_LAG: "5"
+  RPC_TIMEOUT_SECONDS: "4"

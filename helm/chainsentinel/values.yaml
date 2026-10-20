@@ -1,0 +1,25 @@
+image:
+  repository: ghcr.io/REPLACE_GITHUB_OWNER/chainsentinel
+  tag: REPLACE_WITH_IMMUTABLE_SHA
+  pullPolicy: IfNotPresent
+replicaCount: 2
+service:
+  type: ClusterIP
+  port: 80
+rpc:
+  chainId: "11155111"
+  maxBlockLag: "5"
+  timeoutSeconds: "4"
+  existingSecretName: chainsentinel-rpc # Secret with RPC_ENDPOINTS key, created separately
+resources:
+  requests:
+    cpu: 50m
+    memory: 96Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+serviceMonitor:
+  enabled: false # Requires Prometheus Operator CRDs
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
